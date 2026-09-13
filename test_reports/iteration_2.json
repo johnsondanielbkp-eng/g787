@@ -1,0 +1,45 @@
+{
+  "summary": "Tested backend + frontend article scope against external URL. Clone integrity checks passed for all 3 published articles (slugs/title/body DOM/media hashes), article-media hardening passed, home/artigos/detail flows validated on desktop and mobile, admin preview sanitization passed. One UI gap found in admin editor for explicit content_format switching.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "AdminDashboard editor",
+        "issue": "No visible control to explicitly switch content_format between html/markdown in UI (selector count 0 for expected format control), limiting manual CRUD coverage for temporary HTML article creation via admin interface.",
+        "selector": "select[name='content_format'], [data-testid='admin-article-content-format']",
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_articles_clone_integrity.py",
+    "/app/backend/tests/test_temp_article_cleanup.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Add explicit admin UI control for content_format (html/markdown) with stable data-testid and persist it during edit/save.",
+    "After adding format control, retest admin-only CRUD for temporary HTML + Markdown records end-to-end through UI."
+  ],
+  "critical_code_review_comments": [
+    "Admin credentials are hardcoded constants in backend/server.py; move to environment variables for production safety."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_articles_clone_integrity.py",
+    "/app/backend/tests/test_temp_article_cleanup.py",
+    "/app/test_reports/iteration_2.json"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "95%"
+  },
+  "seed_data_creation": "Created temporary article TEMP_MD_ARTICLE_ITER2 during admin validation; removed via cleanup regression test. Additional TEMP_ records cleaned and none left published.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend regression for article clone integrity now lives in test_articles_clone_integrity.py (18 passing tests). Mobile and desktop checks validated 3-article listing/detail, related links (2 each), no horizontal overflow at 1920x800 and 390x844, and sanitized preview behavior (script/onerror/javascript blocked). If admin format toggle is implemented, rerun pytest + admin Playwright CRUD path.",
+  "rca of the issue": "Repro: login /admin, click + Novo artigo, inspect editor fields. No control exists to select content_format; only textarea label changes based on existing state. Impact: manual admin workflow cannot intentionally create a temporary HTML article from scratch to validate format transitions entirely in UI. Mitigation: add format selector bound to form.content_format and include it in create/update payloads with regression test coverage."
+}

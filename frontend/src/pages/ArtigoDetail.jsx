@@ -2,7 +2,7 @@ import { useLocale } from "../i18n/LocaleProvider";
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { getArticle, listArticles, resolveMediaUrl } from "../lib/api";
-import { renderMarkdown } from "../lib/markdown";
+import { renderArticleContent } from "../lib/markdown";
 import { useReveal, splitWords } from "../lib/useReveal";
 
 function formatDate(iso, locale) {
@@ -46,7 +46,7 @@ export default function ArtigoDetail() {
     return () => { alive = false; };
   }, [slug]);
 
-  const html = useMemo(() => renderMarkdown(article?.content || ""), [article]);
+  const html = useMemo(() => renderArticleContent(article?.content || "", article?.content_format), [article]);
 
   if (loading) {
     return (
@@ -74,7 +74,7 @@ export default function ArtigoDetail() {
 
   return (
     <main className="page page-artigo">
-      <article className="artigo-post">
+      <article className={`artigo-post${article.content_format === "html" ? " artigo-post-original" : ""}`} lang={article.source_url ? "pt-BR" : undefined} data-testid="article-post">
         <header className="section artigo-post-header">
           <div className="shell shell-narrow">
             <div className="artigo-post-breadcrumbs reveal">
@@ -88,7 +88,7 @@ export default function ArtigoDetail() {
             <h1 data-testid="artigo-detail-h1-8" className="h-hero text-reveal" style={{ maxWidth: "28ch" }}>
               {splitWords(tr(article.title))}
             </h1>
-            {article.excerpt ? (
+            {article.excerpt && article.content_format !== "html" ? (
               <p data-testid="artigo-detail-p-9" className="body-lg reveal" style={{ maxWidth: "70ch", color: "var(--cor-texto-muted)" }}>
                 {tr(article.excerpt)}
               </p>
@@ -106,7 +106,7 @@ export default function ArtigoDetail() {
           <div className="artigo-post-cover reveal">
             <div className="shell shell-narrow">
               <div className="artigo-post-cover-frame">
-                <img data-testid="artigo-detail-img-13" src={resolveMediaUrl(article.cover_image)} alt={tr(article.title)} loading="lazy" />
+                <img data-testid="artigo-detail-img-13" src={resolveMediaUrl(article.cover_image)} alt={article.cover_alt || tr(article.title)} loading="lazy" />
               </div>
             </div>
           </div>
@@ -116,6 +116,7 @@ export default function ArtigoDetail() {
           <div className="shell shell-narrow">
             <div
               className="artigo-prose reveal"
+              data-testid="article-content"
               dangerouslySetInnerHTML={{ __html: html }}
             />
           </div>
@@ -133,13 +134,13 @@ export default function ArtigoDetail() {
                 <Link data-testid={`artigo-detail-link-15-${i}`}
                   to={`/artigos/${r.slug}`}
                   key={r.slug}
-                  className="artigo-card artigo-card-appear"
+                  className={`artigo-card artigo-card-appear${r.content_format === "html" ? " artigo-card-original" : ""}`}
                   style={{ animationDelay: `${i * 80}ms` }}
                   data-cursor={tr("Ler")}
                 >
                   <div className="artigo-card-media">
                     {r.cover_image ? (
-                      <img data-testid={`artigo-detail-img-16-${i}`} src={resolveMediaUrl(r.cover_image)} alt={tr(r.title)} loading="lazy" />
+                      <img data-testid={`artigo-detail-img-16-${i}`} src={resolveMediaUrl(r.cover_image)} alt={r.cover_alt || tr(r.title)} loading="lazy" />
                     ) : (
                       <div className="artigo-card-media-empty" aria-hidden />
                     )}

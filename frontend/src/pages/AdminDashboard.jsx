@@ -11,13 +11,15 @@ import {
   uploadImage,
   resolveMediaUrl,
 } from "../lib/api";
-import { renderMarkdown } from "../lib/markdown";
+import { renderArticleContent } from "../lib/markdown";
 
 const EMPTY = {
   title: "",
   slug: "",
   excerpt: "",
   content: "",
+  content_format: "markdown",
+  cover_alt: "",
   cover_image: "",
   category: "",
   author: "Equipe Gi Inovações",
@@ -41,7 +43,7 @@ export default function AdminDashboard() {
   const contentImgInputRef = useRef(null);
   const contentTextareaRef = useRef(null);
 
-  const previewHtml = useMemo(() => renderMarkdown(form.content), [form.content]);
+  const previewHtml = useMemo(() => renderArticleContent(form.content, form.content_format, "admin-preview-content"), [form.content, form.content_format]);
 
   const load = async () => {
     setLoading(true);
@@ -87,6 +89,8 @@ export default function AdminDashboard() {
       slug: a.slug || "",
       excerpt: a.excerpt || "",
       content: a.content || "",
+      content_format: a.content_format || "markdown",
+      cover_alt: a.cover_alt || "",
       cover_image: a.cover_image || "",
       category: a.category || "",
       author: a.author || "Equipe Gi Inovações",
@@ -170,7 +174,10 @@ export default function AdminDashboard() {
     try {
       const res = await uploadImage(file);
       const alt = file.name.replace(/\.[^.]+$/, "");
-      const snippet = `\n\n![${alt}](${res.url})\n\n`;
+      const safeAlt = alt.replace(/[&<>"']/g, "");
+      const snippet = form.content_format === "html"
+        ? `\n\n<img src="${res.url}" alt="${safeAlt}" />\n\n`
+        : `\n\n![${alt}](${res.url})\n\n`;
 
       const ta = contentTextareaRef.current;
       if (ta) {
@@ -308,11 +315,18 @@ export default function AdminDashboard() {
                   <span>Resumo</span>
                   <textarea rows={3} value={form.excerpt} onChange={onChange("excerpt")} data-testid="admin-article-excerpt" />
                 </label>
+                <label className="admin-field">
+                  <span data-testid="admin-content-format-label">Formato do conteúdo</span>
+                  <select name="content_format" value={form.content_format} onChange={onChange("content_format")} data-testid="admin-article-content-format">
+                    <option value="markdown" data-testid="admin-content-format-markdown">Markdown</option>
+                    <option value="html" data-testid="admin-content-format-html">HTML</option>
+                  </select>
+                </label>
                 <label className="admin-field admin-field-full">
                   <span>
-                    Conteúdo (Markdown)
+                    {form.content_format === "html" ? "Conteúdo (HTML original)" : "Conteúdo (Markdown)"}
                     <small style={{ marginLeft: ".6rem", color: "var(--cor-texto-muted)", fontWeight: 400 }}>
-                      Use # títulos, **negrito**, listas, [links](url), ![img](url)
+                      {form.content_format === "html" ? "" : "Use # títulos, **negrito**, listas, [links](url), ![img](url)"}
                     </small>
                   </span>
                   <div className="admin-content-toolbar">

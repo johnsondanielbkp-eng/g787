@@ -127,27 +127,6 @@ const NEON_ICONS = [
 ];
 
 // ===================== SEÇÃO 4 — CONTEÚDOS TÉCNICOS (BLOG) =====================
-const ARTIGOS_FALLBACK = [
-  {
-    slug: "e-tpu-eva-projeto",
-    title: "Quando faz sentido usar E-TPU (Gi Reboot®) junto com EVA no seu projeto",
-    excerpt:
-      "Entenda em quais tipos de calçados e componentes industriais o E-TPU complementa o EVA, aumentando conforto e durabilidade sem complicar o processo produtivo.",
-  },
-  {
-    slug: "matrizes-solados-eva-esportivos",
-    title: "Como escolher matrizes e solados em EVA para linhas esportivas e casuais",
-    excerpt:
-      "Pontos técnicos que P&D e desenvolvimento de produto precisam considerar ao definir matrizes e solados em EVA para tênis e calçados casuais.",
-  },
-  {
-    slug: "linhas-sustentaveis-recovery-green",
-    title: "Linhas sustentáveis em EVA: o que muda com Recovery e Green",
-    excerpt:
-      "Como funcionam os compostos com conteúdo reciclado e de origem renovável e onde eles se encaixam em linhas de calçados e outros componentes.",
-  },
-];
-
 export default function Home() {
   const { tr } = useLocale();
   useReveal("home");
@@ -155,9 +134,11 @@ export default function Home() {
   const footprintRef = useRef(null);
   const solucoesBgRef = useRef(null);
   const sustainStackRef = useRef(null);
-  const [artigos, setArtigos] = useState(ARTIGOS_FALLBACK);
+  const [artigos, setArtigos] = useState([]);
+  const [articlesLoading, setArticlesLoading] = useState(true);
+  const [articlesError, setArticlesError] = useState(false);
 
-  // Fetch dos artigos publicados; se falhar, mantém fallback
+  // Apenas artigos publicados; nunca reintroduzir demonstrações.
   useEffect(() => {
     let alive = true;
     listArticles()
@@ -167,7 +148,8 @@ export default function Home() {
           setArtigos(data.slice(0, 3));
         }
       })
-      .catch(() => {});
+      .catch(() => { if (alive) setArticlesError(true); })
+      .finally(() => { if (alive) setArticlesLoading(false); });
     return () => { alive = false; };
   }, []);
 
@@ -612,10 +594,13 @@ export default function Home() {
           >{tr("Artigos, cases e materiais técnicos produzidos pelo time da Gi sobre desenvolvimento de matrizes, solados em EVA, E-TPU (Gi Reboot®) e compostos, para apoiar P")}<span data-testid="home-span-13" className="amp">{tr("&")}</span>{tr("D e desenvolvimento de produto em calçados e outras aplicações industriais.")}</p>
 
           <div className="blog-grid mt-xl">
+            {articlesLoading && <p className="body-md" data-testid="home-articles-loading">{tr("Carregando artigos…")}</p>}
+            {articlesError && <p className="body-md" role="alert" data-testid="home-articles-error">{tr("Não foi possível carregar os artigos. Tente novamente em instantes.")}</p>}
+            {!articlesLoading && !articlesError && artigos.length === 0 && <p className="body-md" data-testid="home-articles-empty">{tr("Nenhum artigo publicado ainda.")}</p>}
             {artigos.map((a, i) => (
               <Link data-testid={`home-link-14-${i}`}
                 to={`/artigos/${a.slug}`}
-                className={`blog-card artigo-card-appear${a.cover_image ? " blog-card--with-media" : ""}`}
+                className={`blog-card artigo-card-appear${a.cover_image ? " blog-card--with-media" : ""}${a.content_format === "html" ? " artigo-card-original" : ""}`}
                 style={{ animationDelay: `${i * 80}ms` }}
                 key={a.slug || a.title}
                 data-cursor={tr("Ler artigo")}

@@ -263,6 +263,36 @@
 }
 
 /* Related */
+.artigo-post-original .artigo-post-cover-frame {
+  aspect-ratio: auto;
+}
+.artigo-post-original .artigo-post-cover-frame img {
+  height: auto;
+  object-fit: contain;
+}
+.artigo-card-original .artigo-card-media,
+.artigo-card-original .blog-card-media {
+  aspect-ratio: 640 / 426;
+}
+.artigo-card-original .artigo-card-media img,
+.artigo-card-original .blog-card-media img {
+  object-fit: contain;
+  transform: none;
+}
+.artigo-prose {
+  overflow-wrap: anywhere;
+}
+.artigo-prose h1,
+.artigo-prose h2,
+.artigo-prose h3,
+.artigo-prose h4 {
+  letter-spacing: 0;
+}
+.artigo-prose > :first-child { margin-top: 0; }
+.artigo-prose figure { margin-inline: 0; }
+.artigo-prose figcaption { font-size: .9rem; color: var(--cor-texto-muted); }
+.artigos-grid { grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); }
+
 .artigo-related {
   border-top: 1px solid var(--cor-borda);
   padding-top: clamp(3rem, 6vh, 5rem);
@@ -314,6 +344,7 @@
   letter-spacing: 0.02em;
 }
 .admin-field input,
+.admin-field select,
 .admin-field textarea {
   background: var(--cor-fundo);
   border: 1px solid var(--cor-borda-strong);
@@ -331,6 +362,7 @@
   min-height: 90px;
 }
 .admin-field input:focus,
+.admin-field select:focus,
 .admin-field textarea:focus {
   outline: none;
   border-color: var(--cor-acento);

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "8e42a14d-6723-4e76-b7ff-6263389ff2ba",
+    "slug": "testuitemparticle2026",
+    "title": "TEST_UI_TEMP_ARTICLE_2026",
+    "excerpt": "Temporary regression article",
+    "content": "# TEST\n\nConteúdo temporário",
+    "cover_image": "",
+    "category": "",
+    "author": "Equipe Gi Inovações",
+    "read_time": "",
+    "published": true,
+    "created_at": "2026-09-13T15:07:19.453859+00:00",
+    "updated_at": "2026-09-13T15:07:19.453863+00:00"
+  }
+]

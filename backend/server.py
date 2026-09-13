@@ -9,7 +9,8 @@ import base64
 import logging
 from pathlib import Path
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Optional, Literal
+from article_media import create_media_router
 import uuid
 from datetime import datetime, timezone
 
@@ -104,7 +105,10 @@ class Article(BaseModel):
     slug: str
     title: str
     excerpt: str = ""
-    content: str = ""  # markdown
+    content: str = ""
+    content_format: Literal["markdown", "html"] = "markdown"
+    cover_alt: str = ""
+    source_url: str = ""
     cover_image: Optional[str] = ""
     category: Optional[str] = ""
     author: Optional[str] = "Equipe Gi Inovações"
@@ -118,6 +122,8 @@ class ArticleCreate(BaseModel):
     title: str
     excerpt: Optional[str] = ""
     content: Optional[str] = ""
+    content_format: Literal["markdown", "html"] = "markdown"
+    cover_alt: str = ""
     cover_image: Optional[str] = ""
     category: Optional[str] = ""
     author: Optional[str] = "Equipe Gi Inovações"
@@ -130,6 +136,8 @@ class ArticleUpdate(BaseModel):
     title: Optional[str] = None
     excerpt: Optional[str] = None
     content: Optional[str] = None
+    content_format: Optional[Literal["markdown", "html"]] = None
+    cover_alt: Optional[str] = None
     cover_image: Optional[str] = None
     category: Optional[str] = None
     author: Optional[str] = None
@@ -242,6 +250,8 @@ async def create_article(payload: ArticleCreate, _: bool = Depends(require_admin
         title=payload.title,
         excerpt=payload.excerpt or "",
         content=payload.content or "",
+        content_format=payload.content_format,
+        cover_alt=payload.cover_alt,
         cover_image=payload.cover_image or "",
         category=payload.category or "",
         author=payload.author or "Equipe Gi Inovações",
@@ -336,6 +346,9 @@ async def get_upload(name: str):
         headers={"Cache-Control": "public, max-age=31536000, immutable"},
     )
 
+
+# Public media is restricted to records created by the offline import.
+api_router.include_router(create_media_router(db))
 
 # Include the router in the main app
 app.include_router(api_router)
