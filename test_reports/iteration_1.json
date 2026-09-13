@@ -1,0 +1,59 @@
+{
+  "summary": "Executed backend pytest regression and frontend smoke/integration checks on external URL. Core routes, API auth/CRUD protections, language persistence, admin login, and 3D model selection (GI015/GI019/GI020) work. Main failures are video playback streams on mobile Home and Gi Reboot videos.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Home hero video (mobile)",
+        "issue": "Video stays visually black and never advances (readyState=0, currentTime=0, networkState=3) even after wait; source resolves to /assets/hero/fabio_mobile.mp4",
+        "selector": "[data-testid='home-video-1']",
+        "priority": "HIGH"
+      },
+      {
+        "component": "Gi Reboot hero and legendado videos",
+        "issue": "Playback fails with MediaError code 4 (DEMUXER_ERROR_NO_SUPPORTED_STREAMS); videos do not start",
+        "selector": "[data-testid='gi-reboot-video-1'], [data-testid='gi-reboot-legendado-video']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [
+      {
+        "flow": "Gi Reboot video playback",
+        "issue": "Video files return HTTP 200 but browser media pipeline cannot demux supported streams",
+        "affected_selectors": [
+          "[data-testid='gi-reboot-video-1']",
+          "[data-testid='gi-reboot-legendado-video']"
+        ]
+      }
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_public_api_regression.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Re-encode Gi Reboot MP4 assets with widely supported codecs/stream profiles (H.264 + AAC baseline/main, faststart) and retest browser playback",
+    "Investigate mobile Home hero MP4 encoding/playability path; confirm currentTime progression on real mobile Chromium/Safari",
+    "Keep GI014 absent behavior as inherited (explicitly ignored in .gitignore); do not restore/recreate this model file"
+  ],
+  "critical_code_review_comments": [
+    "Frontend/video integration issue: media URLs are reachable (HTTP 200) but not decodable by tested browser runtime, causing non-playing hero/section videos.",
+    "Overflow findings for .solucoes-eps-bg and .sustain-marquee-track appear intentional and clipped by ancestors with overflow hidden; not a regression."
+  ],
+  "updated_files": [
+    "/app/test_reports/iteration_1.json"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "82%"
+  },
+  "seed_data_creation": "Created temporary UI article TEST_UI_TEMP_ARTICLE_2026 during admin CRUD validation and removed it.",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Validated routes /, /empresa, /gi-reboot, /eva, /matrizes, /contato, /artigos, /admin/login on external URL. Language switch PT/ES persists after reload. Admin invalid login rejection works. CRUD write-protection/auth checks pass via pytest. GI015/GI019/GI020 model selections and canvas controls worked; GI014 missing is expected inherited state. Focus next retest on video assets playback after re-encoding.",
+  "rca of the issue": "Reproduction: open /gi-reboot and inspect [data-testid='gi-reboot-video-1'] and [data-testid='gi-reboot-legendado-video']; both remain readyState=0/currentTime=0 with MediaError code 4 and message DEMUXER_ERROR_NO_SUPPORTED_STREAMS. On mobile viewport Home, [data-testid='home-video-1'] also remains readyState=0/currentTime=0 (HTTP 200 source). Likely root cause is incompatible/unsupported media stream encoding profile in delivered MP4 assets for tested Chromium runtime. Mitigation: re-encode videos to broadly compatible MP4 profile and retest playback on desktop/mobile browsers."
+}

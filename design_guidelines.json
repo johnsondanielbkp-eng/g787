@@ -1,0 +1,36 @@
+{
+  "typography": {
+    "heading_font": "Outfit, sans-serif",
+    "body_font": "Inter, sans-serif",
+    "weights": ["300", "400", "500", "600", "700", "900"]
+  },
+  "colors": {
+    "archetype": "Electric & Neon / Luxury hybrid",
+    "primary": "#3B82F6",
+    "background": "#090A0F",
+    "surface": "#12141C",
+    "border": "#1E2230",
+    "text_primary": "#F8FAFC",
+    "text_secondary": "#94A3B8"
+  },
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-xl bg-black/60 border border-white/10",
+    "glow": "shadow-[0_0_30px_rgba(59,130,246,0.15)]",
+    "radius": "rounded-xl"
+  },
+  "component_path": "/app/frontend/src/components/",
+  "instructions_to_main_agent": "Implement all features requested faithfully, ensuring high fidelity, proper error handling, data-testid attributes on all interactive elements, and responsive layout.",
+  "image_urls": [
+    {
+      "category": "hero_background",
+      "description": "abstract dark digital art",
+      "image_url": "https://images.unsplash.com/photo-1557264322-b44d383a2906?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwxfHxhYnN0cmFjdCUyMGFydCUyMGRhcmt8ZW58MHx8fHwxNzg5MTQzMTU0fDA&ixlib=rb-4.1.0&q=85"
+    }
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": [
+    "Never use transparent backgrounds without blur or scrim",
+    "All interactive elements must have data-testid",
+    "Use sonner for toasts",
+    "Ensure high accessibility and clean spacing"
+  ]
+}

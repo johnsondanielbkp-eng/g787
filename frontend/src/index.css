@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========== GI INOVAÇÕES — IDENTIDADE VISUAL ========== */
+:root {
+  --cor-fundo: #ffffff;
+  --cor-fundo-2: #f3f6f8;   /* fundo levemente azulado (do mar) */
+  --cor-fundo-3: #e6eef2;   /* fundo mais saturado para cards */
+  --cor-fundo-dark: #0f2c36; /* deep teal — footer, hero immersive */
+  --cor-texto: #0a1a22;
+  --cor-texto-muted: rgba(10, 26, 34, 0.62);
+  --cor-texto-dim: rgba(10, 26, 34, 0.40);
+
+  /* Brand color principal — Gi Inovações */
+  --cor-acento: #285c70;
+  --cor-acento-light: #3d7a92;
+  --cor-acento-dark: #1a4356;
+  --cor-acento-glow: rgba(40, 92, 112, 0.18);
+
+  /* Acento secundário (warm) usado em destaques pontuais */
+  --cor-acento-2: #e2a13b;   /* amber suave, contraste quente */
+  --cor-acento-3: #c25450;   /* coral discreto para CTAs/alerts */
+
+  --cor-borda: rgba(40, 92, 112, 0.14);
+  --cor-borda-strong: rgba(40, 92, 112, 0.26);
+  --cor-hover: rgba(40, 92, 112, 0.08);
+
+  /* ========== SUPERFÍCIES HARMÔNICAS ==========
+     Alternância entre seções para evitar "tudo branco".
+     Todas as cores derivam da paleta da logo (teal + âmbar). */
+  --surface-white: #ffffff;
+  --surface-warm:  #faf5eb;   /* creme âmbar sutil — deriva do amber #e2a13b */
+  --surface-cool:  #eaf1f3;   /* cinza-teal claro — deriva do teal #285c70 */
+  --surface-deep:  var(--cor-fundo-dark); /* deep teal — para sessões escuras */
+
+  --ease-out-quint: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --font-display: "Archivo", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-body: "Inter Tight", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+body {
+  font-size: 1rem;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+::selection {
+  background: var(--cor-acento);
+  color: #ffffff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor * {
+    cursor: none !important;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 230 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 0 0% 3.9%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 230 100% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 5% 90%;
+    --input: 240 5% 90%;
+    --ring: 230 100% 55%;
+    --radius: 0.5rem;
+  }
+}
+
+[data-debug-wrapper="true"] {
+  display: contents !important;
+}
